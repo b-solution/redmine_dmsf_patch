@@ -16,8 +16,8 @@ module DmsfPatch
               raise DmsfAccessError, l(:error_entry_project_does_not_match_current_project)
             end
 
-            if (@target_folder && @target_folder == @file.folder) ||
-                (@target_folder.nil? && @file.folder.nil? && @target_project == @file.project)
+            if (@target_folder && @target_folder == @file.dmsf_folder) ||
+                (@target_folder.nil? && @file.dmsf_folder.nil? && @target_project == @file.project)
               flash[:error] = l(:error_target_folder_same)
               redirect_to :action => 'new', :id => @file, :target_project_id => @target_project, :target_folder_id => @target_folder
               return
@@ -49,8 +49,8 @@ module DmsfPatch
               @json= {success: false, error_msg: error}
               return
             end
-            if (@target_folder && @target_folder == @file.folder) ||
-                (@target_folder.nil? && @file.folder.nil? && @target_project == @file.project)
+            if (@target_folder && @target_folder == @file.dmsf_folder) ||
+                (@target_folder.nil? && @file.dmsf_folder.nil? && @target_project == @file.project)
               error = l(:error_target_folder_same)
               @json= {success: false, error_msg: error}
               return
