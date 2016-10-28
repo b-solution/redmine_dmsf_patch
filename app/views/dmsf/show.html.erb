@@ -194,7 +194,7 @@
 //    $( ".movabled" ).sortable({
 //      revert: true
 //    });
-    $( ".movabled" ).draggable({
+    $( ".movabled, .dir" ).draggable({
       axis: "y",
       start: function(){
         $(this).data("origPosition", $(this).css('top'));
@@ -203,25 +203,52 @@
     });
     $( ".dir" ).droppable({
       drop: function( event, ui ) {
-        id= ui.draggable.data('id')
+
         folder_id = $(this).data('id');
-        $.ajax({
-          url: '/dmsf/files/'+id+'/copy/move.js?target_folder_id=' + folder_id + '&target_project_id=<%= @project.id %>',
-          type: 'post',
-          success: function(data){
-            if(data.trim() == 'true'){
-              ui.draggable.remove();
-            }else{
+        if(ui.draggable.data('type')== 'file')
+        {
+          id= ui.draggable.data('id')
+          $.ajax({
+            url: '/dmsf/files/'+id+'/copy/move.js?target_folder_id=' + folder_id + '&target_project_id=<%= @project.id %>',
+            type: 'post',
+            success: function(data){
+              if(data.trim() == 'true'){
+                ui.draggable.remove();
+              }else{
+                ui.draggable.css('top', 0);
+                alert(data)
+                return;
+              }
+            },
+            error: function(error){
               ui.draggable.css('top', 0);
-              alert(data)
               return;
             }
-          },
-          error: function(error){
-            ui.draggable.css('top', 0);
-            return;
-          }
-        });
+          });
+        }
+        else if(ui.draggable.data('type')== 'folder')
+        {
+          id= ui.draggable.data('id');
+          $.ajax({
+            url: '/projects/<%= @project.id %>/dmsf/save.js?folder_id='+ id +'&target_folder_id=' + folder_id,
+            type: 'post',
+            success: function(data){
+              if(data.trim() == 'true'){
+                ui.draggable.remove();
+              }else{
+                ui.draggable.css('top', 0);
+                alert(data);
+                return;
+              }
+            },
+            error: function(error){
+              ui.draggable.css('top', 0);
+              return;
+            }
+          });
+        }
+
+
       }
     });
   } );

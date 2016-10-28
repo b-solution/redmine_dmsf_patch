@@ -1,0 +1,6 @@
+
+<% if @json[:success] %>
+true
+<% else %>
+"<%= @json[:error_msg].html_safe %>"
+<% end %>

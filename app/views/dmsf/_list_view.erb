@@ -41,7 +41,7 @@
   </thead>
   <tbody>
   <% @subfolders.each do |subfolder| %>
-    <tr class="dir" data-id="<%= subfolder.id %>">
+    <tr class="dir" data-id="<%= subfolder.id %>" data-type="folder">
       <%= render(:partial => 'dir',
         :locals => {
           :project => @project,
@@ -75,7 +75,7 @@
       <% Rails.logger.error "Error: dmsf_file id #{file.id} has no revision!" %>
       <% next %>
     <% end %>
-    <tr class="file <%= 'movabled' unless file.locked? %>" data-id="<%= file.id %>">
+    <tr data-type="file" class="file <%= 'movabled' unless file.locked? %>" data-id="<%= file.id %>">
       <%= render(:partial => 'file', :locals => {
           :project => @project,
           :file => file,

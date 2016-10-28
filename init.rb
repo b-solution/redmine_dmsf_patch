@@ -8,3 +8,4 @@ Redmine::Plugin.register :redmine_dmsf_patch do
 end
 
 DmsfFilesCopyController.send(:include, DmsfPatch::DmsfFilesCopyControllerPatch)
+DmsfController.send(:include, DmsfPatch::DmsfControllerPatch)

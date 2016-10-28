@@ -6,35 +6,7 @@ module DmsfPatch
       def move_with_js
         respond_to do |format|
           format.html{
-            @target_project = DmsfFile.allowed_target_projects_on_copy.detect {|p| p.id.to_s == params[:target_project_id]} if params[:target_project_id]
-            unless @target_project && User.current.allowed_to?(:file_manipulation, @target_project) && User.current.allowed_to?(:file_manipulation, @project)
-              render_403
-              return
-            end
-            @target_folder = DmsfFolder.visible.find(params[:target_folder_id]) unless params[:target_folder_id].blank?
-            if @target_folder && @target_folder.project != @target_project
-              raise DmsfAccessError, l(:error_entry_project_does_not_match_current_project)
-            end
-
-            if (@target_folder && @target_folder == @file.dmsf_folder) ||
-                (@target_folder.nil? && @file.dmsf_folder.nil? && @target_project == @file.project)
-              flash[:error] = l(:error_target_folder_same)
-              redirect_to :action => 'new', :id => @file, :target_project_id => @target_project, :target_folder_id => @target_folder
-              return
-            end
-
-            unless @file.move_to(@target_project, @target_folder)
-              flash[:error] = "#{l(:error_file_cannot_be_moved)}: #{@file.errors.full_messages.join(', ')}"
-              redirect_to :action => 'new', :id => @file, :target_project_id => @target_project, :target_folder_id => @target_folder
-              return
-            end
-
-            @file.reload
-
-            flash[:notice] = l(:notice_file_moved)
-            log_activity(@file, 'was moved (is copy)')
-
-            redirect_to dmsf_file_path(@file)
+           move_without_js
           }
           format.js{
             @target_project = DmsfFile.allowed_target_projects_on_copy.detect {|p| p.id.to_s == params[:target_project_id]} if params[:target_project_id]
